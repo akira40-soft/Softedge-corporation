@@ -88,7 +88,7 @@ RUN if [ -f composer.json ]; then composer install --no-dev --prefer-dist --no-i
 # Build React frontend if Node project exists
 RUN if [ -f package.json ]; then \
       echo "Building React frontend..." && \
-      npm ci && \
+      npm install && \
       npm run build && \
       echo "React build completed successfully"; \
     else \
