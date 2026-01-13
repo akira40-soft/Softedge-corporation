@@ -47,31 +47,23 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
 # Install security headers and optimizations
 RUN a2enmod headers rewrite
 
-# Fix Apache MPM issue - disable all MPMs except prefork
-RUN a2dismod mpm_event mpm_worker && \
+# Fix Apache MPM issue - Railway specific configuration
+RUN a2dismod mpm_event mpm_worker || true && \
+    a2dismod mpm_prefork || true && \
     a2enmod mpm_prefork
 
 # Create logs directory
 RUN mkdir -p /var/www/html/logs && \
     chown -R www-data:www-data /var/www/html/logs
 
-# Copy custom Apache config for Railway
+# Copy custom Apache config for Railway (simplified)
 RUN echo '<VirtualHost *:${PORT}>' > /etc/apache2/sites-available/000-default.conf && \
-    echo '    ServerAdmin webmaster@localhost' >> /etc/apache2/sites-available/000-default.conf && \
     echo '    DocumentRoot /var/www/html' >> /etc/apache2/sites-available/000-default.conf && \
     echo '    <Directory /var/www/html>' >> /etc/apache2/sites-available/000-default.conf && \
     echo '        Options -Indexes +FollowSymLinks' >> /etc/apache2/sites-available/000-default.conf && \
     echo '        AllowOverride All' >> /etc/apache2/sites-available/000-default.conf && \
     echo '        Require all granted' >> /etc/apache2/sites-available/000-default.conf && \
-    echo '        # Security headers' >> /etc/apache2/sites-available/000-default.conf && \
-    echo '        Header always set X-Frame-Options DENY' >> /etc/apache2/sites-available/000-default.conf && \
-    echo '        Header always set X-Content-Type-Options nosniff' >> /etc/apache2/sites-available/000-default.conf && \
-    echo '        Header always set X-XSS-Protection "1; mode=block"' >> /etc/apache2/sites-available/000-default.conf && \
-    echo '        Header always set Referrer-Policy "strict-origin-when-cross-origin"' >> /etc/apache2/sites-available/000-default.conf && \
-    echo '        Header always set Content-Security-Policy "default-src '\''self'\''; script-src '\''self'\'' '\''unsafe-inline'\'' https://unpkg.com https://cdn.tailwindcss.com; style-src '\''self'\'' '\''unsafe-inline'\'' https://fonts.googleapis.com; font-src '\''self'\'' https://fonts.gstatic.com; img-src '\''self'\'' data: https:; connect-src '\''self'\''"' >> /etc/apache2/sites-available/000-default.conf && \
     echo '    </Directory>' >> /etc/apache2/sites-available/000-default.conf && \
-    echo '    ErrorLog ${APACHE_LOG_DIR}/error.log' >> /etc/apache2/sites-available/000-default.conf && \
-    echo '    CustomLog ${APACHE_LOG_DIR}/access.log combined' >> /etc/apache2/sites-available/000-default.conf && \
     echo '</VirtualHost>' >> /etc/apache2/sites-available/000-default.conf
 
 # Copy the site
