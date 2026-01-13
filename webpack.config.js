@@ -1,5 +1,4 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -12,8 +11,8 @@ module.exports = {
 
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: isProduction ? 'static/js/[name].[contenthash:8].js' : 'static/js/bundle.js',
-    chunkFilename: isProduction ? 'static/js/[name].[contenthash:8].chunk.js' : 'static/js/[name].chunk.js',
+    filename: 'static/js/[name].[contenthash:8].js',
+    chunkFilename: 'static/js/[name].[contenthash:8].chunk.js',
     publicPath: '/',
     clean: true,
   },
@@ -91,23 +90,6 @@ module.exports = {
   },
 
   plugins: [
-    new HtmlWebpackPlugin({
-      template: './src/react/index.html',
-      filename: 'index.html',
-      inject: true,
-      minify: isProduction ? {
-        removeComments: true,
-        collapseWhitespace: true,
-        removeRedundantAttributes: true,
-        useShortDoctype: true,
-        removeEmptyAttributes: true,
-        removeStyleLinkTypeAttributes: true,
-        keepClosingSlash: true,
-        minifyJS: true,
-        minifyCSS: true,
-        minifyURLs: true,
-      } : false,
-    }),
     ...(isProduction ? [
       new MiniCssExtractPlugin({
         filename: 'static/css/[name].[contenthash:8].css',
