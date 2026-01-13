@@ -11,8 +11,12 @@ module.exports = {
 
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'static/js/[name].[contenthash:8].js',
-    chunkFilename: 'static/js/[name].[contenthash:8].chunk.js',
+    filename: (pathData) => {
+      return pathData.chunk.name === 'main'
+        ? 'static/js/main.[contenthash:8].js'
+        : 'static/js/[name].[contenthash:8].js';
+    },
+    chunkFilename: 'static/js/chunk.[id].[contenthash:8].js',
     publicPath: '/',
     clean: true,
   },
@@ -116,19 +120,12 @@ module.exports = {
       cacheGroups: {
         vendor: {
           test: /[\\/]node_modules[\\/]/,
-          name: 'vendors',
+          name: 'vendor',
           chunks: 'all',
-          priority: 10,
-        },
-        react: {
-          test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
-          name: 'react',
-          chunks: 'all',
-          priority: 20,
+          enforce: true,
         },
       },
     },
-    runtimeChunk: 'single',
   },
 
   resolve: {
