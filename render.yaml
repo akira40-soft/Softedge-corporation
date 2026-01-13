@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: softedge-corporation
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health.php
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: RENDER
+        value: true
+    plan: starter
+    autoDeploy: true
+    buildFilter:
+      paths:
+        - "**"
+      ignoredPaths:
+        - "logs/**"
+        - ".git/**"
+        - "README.md"
+        - "*.md"
+    disk:
+      name: softedge-data
+      mountPath: /var/www/html/logs
+      sizeGB: 1
