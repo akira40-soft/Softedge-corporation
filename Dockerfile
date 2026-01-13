@@ -13,6 +13,7 @@ RUN apt-get update && \
         libcurl4-openssl-dev \
         libssl-dev \
         libicu-dev \
+        libsqlite3-dev \
         git \
         curl \
         wget \
